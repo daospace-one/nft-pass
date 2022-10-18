@@ -10,7 +10,7 @@ describe("SpacePassNFT", function () {
     // console.log('account', owner.address, otherAccount.address)
 
     const Mintable = await ethers.getContractFactory("SpacePassNFT");
-    const mintable = await Mintable.connect(otherAccount).deploy("SuperToken", "SuperToken", "http://google.com/");
+    const mintable = await Mintable.connect(otherAccount).deploy("SpacePassNFT", "SpacePassNFT", "http://google.com/");
     // const mintable = await Mintable.attach("");
 
     return { mintable, owner, otherAccount, thirdAccount };
