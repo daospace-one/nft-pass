@@ -20,7 +20,7 @@ describe("SpacePassNFT", function () {
     it("Should be mintable", async function () {
       const { mintable, owner, otherAccount, thirdAccount } = await deployFixture();
 
-      await mintable.connect(otherAccount).mint(otherAccount.address);
+      await mintable.connect(otherAccount).mint(otherAccount.address, 1);
       console.log('user address', otherAccount.address)
       console.log("ownerOf(0)", await mintable.ownerOf(0));
       console.log("tokenURI(0)", await mintable.tokenURI(0));
@@ -29,12 +29,14 @@ describe("SpacePassNFT", function () {
       console.log("activated(0)", await mintable.activated(0));
       await mintable.connect(otherAccount).activate(0);
       console.log("activated(0)", await mintable.activated(0));
+      console.log("passType(0)", await mintable.passType(0));
+      console.log("expires(0)", await mintable.expires(0));
     });
 
     it("Should not be transferrable when activated", async function () {
       const { mintable, owner, otherAccount, thirdAccount } = await deployFixture();
 
-      await mintable.connect(otherAccount).mint(otherAccount.address);
+      await mintable.connect(otherAccount).mint(otherAccount.address, 1);
       console.log('user address', otherAccount.address)
       console.log("ownerOf(0)", await mintable.ownerOf(0));
       console.log("tokenURI(0)", await mintable.tokenURI(0));

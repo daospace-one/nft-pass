@@ -17,6 +17,7 @@ contract SpacePassNFT is ERC721, AccessControl {
 
     mapping(address => uint256) private _minted;
     mapping(uint256 => uint256) private _activated;
+    mapping(uint256 => uint256) private _pass_type;
 
     event BaseURIChanged(string newBaseURI);
     event RootChanged(bytes32 newRoot);
@@ -34,11 +35,12 @@ contract SpacePassNFT is ERC721, AccessControl {
             super.supportsInterface(interfaceId);
     }
 
-    function mint(address to) external {
+    function mint(address to, uint256 pass_type) external {
         require(hasRole(MINTER_ROLE, msg.sender), "caller is not a minter");
 
         uint256 tokenId = _tokenIds.current();
         _safeMint(to, tokenId);
+        _pass_type[tokenId] = pass_type;
 
         _tokenIds.increment();
     }
@@ -53,6 +55,22 @@ contract SpacePassNFT is ERC721, AccessControl {
 
     function activated(uint256 tokenId) public view returns(uint256) {
         return _activated[tokenId];
+    }
+
+    function passType(uint256 tokenId) public view returns(uint256) {
+        return _pass_type[tokenId];
+    }
+
+    function expires(uint256 tokenId) public view returns(uint256) {
+        if (_activated[tokenId] == 0) {
+            return 0;
+        } else if (_pass_type[tokenId] == 1) {
+            return _activated[tokenId] + 86400;
+        } else if (_pass_type[tokenId] == 2) {
+            return _activated[tokenId] + 7*86400;
+        } else if (_pass_type[tokenId] == 3) {
+            return _activated[tokenId] + 30*86400;
+        }
     }
 
     function mintBatch(address[] calldata addrs, uint256[] calldata ids) external {
