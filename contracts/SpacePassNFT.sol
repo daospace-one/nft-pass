@@ -28,6 +28,7 @@ contract SpacePassNFT is ERC721, AccessControl {
         baseURI = _baseURI;
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
         _setupRole(MINTER_ROLE, msg.sender);
+        _tokenIds.increment();
     }
 
     function supportsInterface(bytes4 interfaceId) public view virtual override(ERC721, AccessControl) returns (bool) {
