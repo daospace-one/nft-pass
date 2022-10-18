@@ -15,7 +15,7 @@ contract SpacePassNFT is ERC721, AccessControl {
 
     bytes32 public constant MINTER_ROLE = keccak256("MINTER");
 
-    mapping(address => uint256) private _minted;
+    mapping(address => uint256) private _last_activated;
     mapping(uint256 => uint256) private _activated;
     mapping(uint256 => uint256) private _pass_type;
 
@@ -49,12 +49,17 @@ contract SpacePassNFT is ERC721, AccessControl {
         require(hasRole(MINTER_ROLE, msg.sender) || ownerOf(tokenId) == msg.sender, "caller is not a minter or the owner");
 
         _activated[tokenId] = block.timestamp;
+        _last_activated[ownerOf(tokenId)] = tokenId;
 
         return true;
     }
 
     function activated(uint256 tokenId) public view returns(uint256) {
         return _activated[tokenId];
+    }
+
+    function lastActivated(address addr) public view returns(uint256) {
+        return _last_activated[addr];
     }
 
     function passType(uint256 tokenId) public view returns(uint256) {

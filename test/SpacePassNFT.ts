@@ -31,6 +31,8 @@ describe("SpacePassNFT", function () {
       console.log("activated(0)", await mintable.activated(0));
       console.log("passType(0)", await mintable.passType(0));
       console.log("expires(0)", await mintable.expires(0));
+      console.log("lastActivated(otherAccount)", await mintable.lastActivated(otherAccount.address));
+
     });
 
     it("Should not be transferrable when activated", async function () {
