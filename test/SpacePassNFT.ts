@@ -21,8 +21,10 @@ describe("SpacePassNFT", function () {
       const { mintable, owner, otherAccount, thirdAccount } = await deployFixture();
 
       await mintable.connect(owner).mint(owner.address, 86400);
+      await mintable.connect(owner).mint(owner.address, 86400);
       console.log('user address', owner.address)
       console.log("ownerOf(1)", await mintable.ownerOf(1));
+      console.log("ownerOf(2)", await mintable.ownerOf(2));
       console.log("tokenURI(1)", await mintable.tokenURI(1));
       await mintable.setTokenURI("https://daospace.one/nft/data/");
       console.log("tokenURI(1)", await mintable.tokenURI(1));
@@ -33,6 +35,9 @@ describe("SpacePassNFT", function () {
       console.log("expires(1)", await mintable.expires(1));
       console.log("lastActivated(owner)", await mintable.lastActivated(owner.address));
 
+      console.log("balanceOf(owner)", await mintable.balanceOf(owner.address));
+      console.log("tokenOfOwnerByIndex(owner, 0)", await mintable.tokenOfOwnerByIndex(owner.address, 0));
+      console.log("tokenOfOwnerByIndex(owner, 1)", await mintable.tokenOfOwnerByIndex(owner.address, 1));
     });
 
     it("Should not be transferrable when activated", async function () {

@@ -103,6 +103,7 @@ contract SpacePassNFT is ERC721Enumerable, AccessControl {
         address to,
         uint256 tokenId
     ) internal virtual override {
+        super._beforeTokenTransfer(from, to, tokenId);
         if (_activated[tokenId] > 0) {
             revert("cannot be transferred when activated");
         }
