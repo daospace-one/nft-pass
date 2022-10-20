@@ -2,7 +2,7 @@ import { time, loadFixture } from "@nomicfoundation/hardhat-network-helpers";
 import { anyValue } from "@nomicfoundation/hardhat-chai-matchers/withArgs";
 
 import { expect } from "chai";
-import { ethers } from "hardhat";
+import { ethers, upgrades } from "hardhat";
 
 describe("SpacePassNFT", function () {
   async function deployFixture() {
@@ -10,7 +10,7 @@ describe("SpacePassNFT", function () {
     // console.log('account', owner.address, otherAccount.address)
 
     const Mintable = await ethers.getContractFactory("SpacePassNFT");
-    const mintable = await Mintable.connect(owner).deploy("SpacePassNFT", "SpacePassNFT", "http://google.com/");
+    const mintable = await upgrades.deployProxy(Mintable, []);
     // const mintable = await Mintable.attach("");
 
     return { mintable, owner, otherAccount, thirdAccount };

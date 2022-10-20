@@ -1,16 +1,16 @@
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
-import "@openzeppelin/contracts/utils/Strings.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/access/AccessControl.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721EnumerableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/StringsUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
+import "@openzeppelin/contracts-upgradeable/utils/CountersUpgradeable.sol";
 
-contract SpacePassNFT is ERC721Enumerable, AccessControl {
-    using Strings for uint256;
-    using Counters for Counters.Counter;
-    Counters.Counter private _tokenIds;
+contract SpacePassNFT is ERC721EnumerableUpgradeable, AccessControlUpgradeable {
+    using StringsUpgradeable for uint256;
+    using CountersUpgradeable for CountersUpgradeable.Counter;
+    CountersUpgradeable.Counter private _tokenIds;
 
     string public baseURI;
 
@@ -25,17 +25,20 @@ contract SpacePassNFT is ERC721Enumerable, AccessControl {
 
     error URIQueryForNonexistentToken();
 
-    constructor(string memory name, string memory symbol, string memory _baseURI) ERC721(name, symbol) {
-        baseURI = _baseURI;
-        _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
-        _setupRole(MINTER_ROLE, msg.sender);
-        _tokenIds.increment();
-    }
+    function initialize() initializer public {
+      __ERC721_init("SpacePassNFT", "PASS");
+      __AccessControl_init();
+      _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
+      _setupRole(MINTER_ROLE, msg.sender);
+      baseURI = "https://daospace.one/nft/data/";
+      _tokenIds.increment();
+     }
 
-    function supportsInterface(bytes4 interfaceId) public view virtual override(ERC721Enumerable, AccessControl) returns (bool) {
-        return
-            super.supportsInterface(interfaceId);
-    }
+    function supportsInterface(bytes4 interfaceId) public view virtual override(ERC721EnumerableUpgradeable, AccessControlUpgradeable) returns (bool) {
+        return interfaceId == type(ERC721EnumerableUpgradeable).interfaceId ||
+            interfaceId == type(AccessControlUpgradeable).interfaceId ||
+             super.supportsInterface(interfaceId);
+     }
 
     function mint(address to, uint256 duration) external {
         require(hasRole(MINTER_ROLE, msg.sender), "caller is not a minter");
