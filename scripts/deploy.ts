@@ -3,7 +3,7 @@ import { ethers } from "hardhat";
 async function main() {
     const [owner] = await ethers.getSigners();
     const Mintable = await ethers.getContractFactory("SpacePassNFT");
-    const mintable = await Mintable.connect(owner).deploy("SpacePassNFT", "SpacePassNFT", "https://daospace.one/nft/data/");
+    const mintable = await upgrades.deployProxy(Mintable, []);
     console.log("mintable.address", mintable.address);
 }
 
@@ -12,11 +12,13 @@ async function mint() {
     const [owner] = await ethers.getSigners()
     const Mintable = await ethers.getContractFactory("SpacePassNFT")
 
-    const mintable = await Mintable.attach(process.env.CONTRASCT_ADDR)
+    const mintable = await Mintable.attach("0x")
     console.log('SpacePassNFT address', mintable.address)
     let user = process.env.USER_ADDR
     console.log('user', user)
-    await mintable.mint(user, 3)
+    await mintable.connect(owner).mint(user, 86400*30)
+    await mintable.connect(owner).mint(user, 86400*30)
+
     console.log(await mintable.ownerOf(1))
     console.log(await mintable.connect(owner).activate(1))
     console.log(await mintable.connect(owner).activated(1))
