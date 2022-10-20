@@ -18,10 +18,31 @@ passnft = w3.eth.contract(
     abi=abi
 )
 
+# 获得合约名称
 print(passnft.functions.name().call())
+
+# 检查 NFT Token 1 的 owner
 passnft.functions.ownerOf(1).call()
+
+# 获得 NFT Token 1 的 metadata
 passnft.functions.tokenURI(1).call()
+
+# 获得 NFT Token 1 的有效时长，一天有效期则 86400，30天则 86400*30
 passnft.functions.duration(1).call()
+
+# 获得 NFT Token 1 的过期时间
 passnft.functions.expires(1).call()
+
+# 获得 NFT Token 1 是否激活
 passnft.functions.activated(1).call()
+
+# 获得用户当前被激活的 Token
 print(passnft.functions.lastActivated(address).call())
+
+# 以下方法用于枚举用户的 NFT
+
+# 获得用户持有的 Token 数量，使用这个数量进行枚举
+print(passnft.functions.balanceOf(address).call())
+
+# 获得用户持有的第0个 Token 的 Token ID
+print(passnft.functions.tokenOfOwnerByIndex(address, 0).call())
