@@ -3,7 +3,6 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts-upgradeable/token/ERC721/ERC721Upgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721EnumerableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/StringsUpgradeable.sol";
-import "@openzeppelin/contracts-upgradeable/access/OwnableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/CountersUpgradeable.sol";
 
@@ -30,7 +29,7 @@ contract SpacePassNFT is ERC721EnumerableUpgradeable, AccessControlUpgradeable {
       __AccessControl_init();
       _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
       _setupRole(MINTER_ROLE, msg.sender);
-      baseURI = "https://daospace.one/nft/data/";
+      baseURI = "https://nft.daospace.one/nft/data/";
       _tokenIds.increment();
      }
 
