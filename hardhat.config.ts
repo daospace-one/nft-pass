@@ -16,7 +16,7 @@ const config: HardhatUserConfig = {
         process.env.KEY1 !== undefined ? [process.env.KEY1] : [],
     },
     glmr: {
-      url: `https://rpc.api.moonbeam.network`,
+      url: `https://rpc.ankr.com/moonbeam`,
       accounts:
         process.env.KEY1 !== undefined ? [process.env.KEY1] : [],
     },

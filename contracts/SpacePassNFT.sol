@@ -52,6 +52,7 @@ contract SpacePassNFT is ERC721EnumerableUpgradeable, AccessControlUpgradeable {
 
     function activate(uint256 tokenId) public returns(bool) {
         require(hasRole(MINTER_ROLE, msg.sender) || ownerOf(tokenId) == msg.sender, "caller is not a minter or the owner");
+        require(_activated[tokenId] == 0, "cannot be activated again");
 
         _activated[tokenId] = block.timestamp;
         _last_activated[ownerOf(tokenId)] = tokenId;
@@ -71,6 +72,10 @@ contract SpacePassNFT is ERC721EnumerableUpgradeable, AccessControlUpgradeable {
         return _duration[tokenId];
     }
 
+    function status(uint256 tokenId) public view returns(uint256, uint256, address) {
+        return (_duration[tokenId], _activated[tokenId], ownerOf(tokenId));
+    }
+
     function expires(uint256 tokenId) public view returns(uint256) {
         if (_activated[tokenId] == 0) {
             return 0;
@@ -86,6 +91,12 @@ contract SpacePassNFT is ERC721EnumerableUpgradeable, AccessControlUpgradeable {
         for (uint256 i = 0; i < addrs.length; i+=1) {
             _safeMint(addrs[i], ids[i]);
         }
+    }
+
+    function burn(uint256 tokenId) public virtual {
+        //solhint-disable-next-line max-line-length
+        require(_isApprovedOrOwner(_msgSender(), tokenId) || hasRole(MINTER_ROLE, msg.sender), "ERC721: caller is not token owner nor minter");
+        _burn(tokenId);
     }
 
     function tokenURI(uint256 tokenId) public view virtual override returns (string memory) {
@@ -107,7 +118,7 @@ contract SpacePassNFT is ERC721EnumerableUpgradeable, AccessControlUpgradeable {
         uint256 tokenId
     ) internal virtual override {
         super._beforeTokenTransfer(from, to, tokenId);
-        if (_activated[tokenId] > 0) {
+        if (_activated[tokenId] > 0 && to != address(0)) {
             revert("cannot be transferred when activated");
         }
     }
