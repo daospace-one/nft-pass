@@ -20,6 +20,11 @@ const config: HardhatUserConfig = {
       accounts:
         process.env.KEY1 !== undefined ? [process.env.KEY1] : [],
     },
+    avax: {
+      url: `https://api.avax.network/ext/bc/C/rpc`,
+      accounts:
+        process.env.KEY1 !== undefined ? [process.env.KEY1] : [],
+    },
   },
 };
 

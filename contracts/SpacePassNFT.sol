@@ -39,21 +39,60 @@ contract SpacePassNFT is ERC721EnumerableUpgradeable, AccessControlUpgradeable {
              super.supportsInterface(interfaceId);
      }
 
-    function mint(address to, uint256 duration) external {
+    function mintMany(address[] calldata addrs, uint256 duration) external {
+        require(hasRole(MINTER_ROLE, msg.sender), "caller is not a minter");
+
+        for (uint256 i = 0; i < addrs.length; i+=1) {
+            uint256 tokenId = _tokenIds.current();
+            _safeMint(addrs[i], tokenId);
+            _duration[tokenId] = duration;
+
+            _tokenIds.increment();
+        }
+    }
+
+    function mintAndActivateBatch(address[] calldata addrs, uint256[] calldata timestamps, uint256 duration) external {
+        require(hasRole(MINTER_ROLE, msg.sender), "caller is not a minter");
+        require(addrs.length == timestamps.length, "invalid data");
+
+        for (uint256 i = 0; i < addrs.length; i+=1) {
+            uint256 tokenId = _tokenIds.current();
+            _safeMint(addrs[i], tokenId);
+            _duration[tokenId] = duration;
+
+            if (timestamps[i] == 0) {
+              _activated[tokenId] = block.timestamp;
+            } else {
+              _activated[tokenId] = timestamps[i];
+            }
+
+            _tokenIds.increment();
+            _last_activated[ownerOf(tokenId)] = tokenId;
+
+        }
+    }
+
+    function mint(address addr, uint256 duration) external returns (uint256) {
         require(hasRole(MINTER_ROLE, msg.sender), "caller is not a minter");
 
         uint256 tokenId = _tokenIds.current();
-        _safeMint(to, tokenId);
+        _safeMint(addr, tokenId);
         _duration[tokenId] = duration;
 
         _tokenIds.increment();
+        return tokenId;
     }
 
-    function activate(uint256 tokenId) public returns(bool) {
+    function activate(uint256 tokenId, uint256 time) public returns(bool) {
         require(hasRole(MINTER_ROLE, msg.sender) || ownerOf(tokenId) == msg.sender, "caller is not a minter or the owner");
         require(_activated[tokenId] == 0, "cannot be activated again");
 
-        _activated[tokenId] = block.timestamp;
+        if (time == 0) {
+          _activated[tokenId] = block.timestamp;
+        } else {
+          _activated[tokenId] = time;
+        }
+
         _last_activated[ownerOf(tokenId)] = tokenId;
 
         return true;

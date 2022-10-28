@@ -20,8 +20,12 @@ describe("SpacePassNFT", function () {
     it("Should be mintable", async function () {
       const { mintable, owner, otherAccount, thirdAccount } = await deployFixture();
 
-      await mintable.connect(owner).mint(owner.address, 86400);
-      await mintable.connect(owner).mint(owner.address, 86400);
+      let tx1 = await mintable.connect(owner).mint(owner.address, 86400);
+      let tx2 = await mintable.connect(owner).mint(owner.address, 86400);
+      console.log('tx1', tx1)
+      let receipt = await tx1.wait()
+      console.log('receipt', receipt.events[0].args.tokenId)
+
       console.log('user address', owner.address)
       console.log("ownerOf(1)", await mintable.ownerOf(1));
       console.log("ownerOf(2)", await mintable.ownerOf(2));
@@ -29,7 +33,7 @@ describe("SpacePassNFT", function () {
       await mintable.setTokenURI("https://daospace.one/nft/data/");
       console.log("tokenURI(1)", await mintable.tokenURI(1));
       console.log("activated(1)", await mintable.activated(1));
-      await mintable.connect(owner).activate(1);
+      await mintable.connect(owner).activate(1, 0);
       console.log("activated(1)", await mintable.activated(1));
       console.log("duration(1)", await mintable.duration(1));
       console.log("expires(1)", await mintable.expires(1));
@@ -39,6 +43,22 @@ describe("SpacePassNFT", function () {
       console.log("tokenOfOwnerByIndex(owner, 0)", await mintable.tokenOfOwnerByIndex(owner.address, 0));
       console.log("tokenOfOwnerByIndex(owner, 1)", await mintable.tokenOfOwnerByIndex(owner.address, 1));
       console.log("status(owner, 1)", await mintable.status(1));
+
+      await mintable.connect(owner).activate(2, 1666000000);
+      console.log("activated(2)", await mintable.activated(2));
+    });
+
+    it("Should be mintable in batch", async function () {
+      const { mintable, owner, otherAccount, thirdAccount } = await deployFixture();
+
+      let tx1 = await mintable.connect(owner).mintAndActivateBatch([owner.address], [Math.floor(Number(new Date('2022-10-01'))/1000)], 86400 * 30);
+      console.log(mintable)
+      let tx2 = await mintable.connect(owner).mintMany([owner.address], 86400 * 30);
+      console.log("activated(1)", await mintable.activated(1));
+      console.log("activated(2)", await mintable.activated(2));
+      console.log("ownerOf(1)", await mintable.ownerOf(1));
+      console.log("ownerOf(2)", await mintable.ownerOf(2));
+      
     });
 
     it("Should not be transferrable when activated", async function () {
@@ -52,8 +72,8 @@ describe("SpacePassNFT", function () {
       console.log("tokenURI(1)", await mintable.tokenURI(1));
       await mintable['safeTransferFrom(address,address,uint256)'](owner.address, thirdAccount.address, 1);
       console.log("activated(1)", await mintable.activated(1));
-      // await expect(mintable.connect(otherAccount).activate(1)).revertedWith("caller is not a minter or the owner");
-      await mintable.connect(owner).activate(1);
+      // await expect(mintable.connect(otherAccount).activate(1, 0)).revertedWith("caller is not a minter or the owner");
+      await mintable.connect(owner).activate(1, 0);
       console.log("activated(1)", await mintable.activated(1));
       // await expect(mintable.connect(thirdAccount)['safeTransferFrom(address,address,uint256)'](thirdAccount.address, owner.address, 1)).revertedWith("cannot be transferred when activated");
       console.log("burn(1)", await mintable.connect(owner).burn(1));
