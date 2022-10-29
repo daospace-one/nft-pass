@@ -87,10 +87,10 @@ contract SpacePassNFT is ERC721EnumerableUpgradeable, AccessControlUpgradeable {
         require(hasRole(MINTER_ROLE, msg.sender) || ownerOf(tokenId) == msg.sender, "caller is not a minter or the owner");
         require(_activated[tokenId] == 0, "cannot be activated again");
 
-        if (time == 0) {
-          _activated[tokenId] = block.timestamp;
-        } else {
+        if (time > 0 && hasRole(MINTER_ROLE, msg.sender)) {
           _activated[tokenId] = time;
+        } else {
+          _activated[tokenId] = block.timestamp;
         }
 
         _last_activated[ownerOf(tokenId)] = tokenId;
