@@ -37,7 +37,7 @@ contract Merger is AccessControlUpgradeable, IERC721ReceiverUpgradeable {
             _mercury_collection[addr] -= 2;
         }
 
-        planet.mintComet(addr, 1);
+        planet.mint(addr, 1);
     }
 
 }

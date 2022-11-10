@@ -10,23 +10,31 @@ describe("PlanetNFT", function () {
     // console.log('account', owner.address, otherAccount.address)
 
     const Mintable = await ethers.getContractFactory("PlanetNFT");
-    const mintable = await upgrades.deployProxy(Mintable, []);
+    const mintable = await upgrades.deployProxy(Mintable, ["PlanetNFT", "COMET", "https://planet-nft.pns.link/nft/data/", 10000000, "0x0000000000000000000000000000000000000000"]);
     // const mintable = await Mintable.attach("");
+
+    const Mercury = await ethers.getContractFactory("PlanetNFT");
+    const mercury = await upgrades.deployProxy(Mercury, ["PlanetNFT", "COMET", "https://planet-nft.pns.link/nft/data/", 10000000, mintable.address]);
+
+    let minterRole = await mintable.MINTER_ROLE()
+
+    await mintable.connect(owner).grantRole(minterRole, mercury.address)
+
 
     // const Merger = await ethers.getContractFactory("Merger");
     // const merger = await upgrades.deployProxy(Merger, [mintable.address]);
     // const merger = await Merger.attach("");
 
-    return { mintable, owner, otherAccount, thirdAccount };
+    return { mintable, mercury, owner, otherAccount, thirdAccount };
   }
 
   describe("Deployment", function () {
     it("Should be mintable", async function () {
-      const { mintable, owner, otherAccount, thirdAccount } = await deployFixture();
+      const { mintable, mercury, owner, otherAccount, thirdAccount } = await deployFixture();
 
       let tx, receipt
-      tx = await mintable.setMintlist([owner.address], [5], 7);
-      tx = await mintable.connect(owner).mintComet(owner.address, 5);
+      tx = await mintable.setMintlist([owner.address], [5]);
+      tx = await mintable.connect(owner).mint(owner.address, 5);
       console.log('tx', tx)
       receipt = await tx.wait()
       console.log('receipt', receipt.events[0].args.tokenId)
@@ -49,12 +57,10 @@ describe("PlanetNFT", function () {
       console.log("tokenOfOwnerByIndex(owner, 3)", await mintable.tokenOfOwnerByIndex(owner.address, 3));
       console.log("tokenOfOwnerByIndex(owner, 4)", await mintable.tokenOfOwnerByIndex(owner.address, 4));
 
-      tx = await mintable.mergeComet(owner.address, ["10000001", "10000002", "10000003", "10000004", "10000005"])
+      tx = await mercury.merge(owner.address, ["10000001", "10000002", "10000003", "10000004", "10000005"])
       receipt = await tx.wait()
-      // receipt = await tx.wait()
       console.log(receipt.events.length)
       console.log('receipt', receipt.events[receipt.events.length - 1].args.tokenId)
-
 
     });
   });
