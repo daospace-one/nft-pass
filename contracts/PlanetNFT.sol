@@ -3,7 +3,6 @@ pragma solidity ^0.8.0;
 import "@openzeppelin/contracts-upgradeable/token/ERC721/extensions/ERC721EnumerableUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/StringsUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
-// import "@openzeppelin/contracts-upgradeable/utils/CountersUpgradeable.sol";
 
 contract PlanetNFT is ERC721EnumerableUpgradeable, AccessControlUpgradeable {
     using StringsUpgradeable for uint256;

@@ -16,9 +16,10 @@ const config: HardhatUserConfig = {
         process.env.KEY1 !== undefined ? [process.env.KEY1] : [],
     },
     glmr: {
-      url: `https://rpc.ankr.com/moonbeam`,
+      url: `https://rpc.api.moonbeam.network`,
+      timeout: 3800000,
       accounts:
-        process.env.KEY1 !== undefined ? [process.env.KEY1] : [],
+        process.env.KEY1 !== undefined ? [process.env.KEY1, process.env.KEY2] : [],
     },
     avax: {
       url: `https://api.avax.network/ext/bc/C/rpc`,
@@ -26,6 +27,9 @@ const config: HardhatUserConfig = {
         process.env.KEY1 !== undefined ? [process.env.KEY1] : [],
     },
   },
+  mocha: {
+      timeout: 3600000,
+  }
 };
 
 export default config;
