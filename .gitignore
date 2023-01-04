@@ -12,3 +12,4 @@ artifacts
 .openzeppelin
 
 .DS_Store
+/data

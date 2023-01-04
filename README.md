@@ -23,6 +23,9 @@ DaoSpaceToken avax contract address:
 SpacePassNFT avax contract address:
 0xF94AEc47Decd15655755b4feb0D7399b7fEE3145
 
+DaoSpaceToken glmr contract address:
+0xfbEC7f431008970c2f8F4cc0723Cd6aCF0Ba0915
+
 test:
 
 NFT glmr contract address:

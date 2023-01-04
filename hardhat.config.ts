@@ -26,6 +26,13 @@ const config: HardhatUserConfig = {
       accounts:
         process.env.KEY1 !== undefined ? [process.env.KEY1] : [],
     },
+    scroll: {
+      url: `https://prealpha.scroll.io/l2`,
+      accounts:
+        process.env.SCROLLKEY !== undefined ? [process.env.SCROLLKEY] : [],
+    },
+
+
   },
   mocha: {
       timeout: 3600000,

@@ -14,16 +14,11 @@ describe("PlanetNFT", function () {
     // const mintable = await Mintable.attach("");
 
     const Mercury = await ethers.getContractFactory("PlanetNFT");
-    const mercury = await upgrades.deployProxy(Mercury, ["PlanetNFT", "COMET", "https://planet-nft.pns.link/nft/data/", 10000000, mintable.address]);
+    const mercury = await upgrades.deployProxy(Mercury, ["PlanetNFT", "MERCURY", "https://planet-nft.pns.link/nft/data/", 1000000, mintable.address]);
 
     let minterRole = await mintable.MINTER_ROLE()
 
     await mintable.connect(owner).grantRole(minterRole, mercury.address)
-
-
-    // const Merger = await ethers.getContractFactory("Merger");
-    // const merger = await upgrades.deployProxy(Merger, [mintable.address]);
-    // const merger = await Merger.attach("");
 
     return { mintable, mercury, owner, otherAccount, thirdAccount };
   }
